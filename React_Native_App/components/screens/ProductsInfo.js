@@ -51,7 +51,7 @@ const ProductInfo = ({ route, navigation }) => {
     // console.log(product, productID)
     //add to cart
 
-    const addToCart = async id => {
+    const addToCart = async (id) => {
         let itemArray = await AsyncStorage.getItem('cartItems');
         itemArray = JSON.parse(itemArray);
         if (itemArray) {

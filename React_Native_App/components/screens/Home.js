@@ -81,7 +81,7 @@ const Home = ({ navigation }) => {
                     <TouchableOpacity>
                         <FontAwesome5 name="shopping-bag" style={styles.shoppingBagStyle} />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
                         <FontAwesome5 name="shopping-cart" style={styles.shoppingCartStyle} />
                     </TouchableOpacity>
                 </View>
