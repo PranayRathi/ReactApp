@@ -43,7 +43,7 @@ const Home = ({ navigation }) => {
                 onPress=
                 {
                     () => {
-                        navigation.navigate('ProductsInfo', { productId: data.id })
+                        navigation.navigate('ProductsInfo', { productID: data.id })
                     }
                 }>
                 <View style={styles.mainproductContainer2}>
