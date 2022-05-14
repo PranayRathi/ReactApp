@@ -190,7 +190,7 @@ const ProductInfo = ({ route, navigation }) => {
                                     style={styles.s19}
                                 />
                             </View>
-                            <Text> Rustaveli Ave 57,{'\n'}17-001, Batume</Text>
+                            <Text> Weekly Market Road,{'\n'} Nandura-443404</Text>
                         </View>
                         <Entypo
                             name="chevron-right"

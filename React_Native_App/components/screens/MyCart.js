@@ -29,6 +29,7 @@ const MyCart = ({ navigation }) => {
     const getDataFromDB = async () => {
         let items = await AsyncStorage.getItem('cartItems');
         items = JSON.parse(items);
+        // console.log(items)
         let productData = [];
         if (items) {
             Items.forEach(data => {
@@ -176,12 +177,15 @@ const MyCart = ({ navigation }) => {
                     </Text>
                     <View></View>
                 </View>
+
                 <Text
                     style={styles.s5}>
                     My Cart
                 </Text>
                 <View style={{ paddingHorizontal: 16 }}>
-                    {product ? product.map(renderProducts) : null}
+                    {product && product.length ? product.map((data, index) => renderProducts(data, index)) :
+                        <Text style={styles.text1}>Pleas add product in your cart!</Text>
+                    }
                 </View>
                 <View>
                     <View
@@ -348,6 +352,13 @@ export default MyCart;
 
 
 const styles = StyleSheet.create({
+    text1: {
+        fontSize: 20,
+        color: COLOURS.black,
+        fontWeight: '500',
+        letterSpacing: 1,
+        marginBottom: 10
+    },
     renderProducts1: {
         width: '100%',
         height: 100,
@@ -461,9 +472,9 @@ const styles = StyleSheet.create({
     },
 
     s4: {
-        fontSize: 14,
+        fontSize: 15,
         color: COLOURS.black,
-        fontWeight: '400',
+        fontWeight: '500',
     },
 
     s5: {

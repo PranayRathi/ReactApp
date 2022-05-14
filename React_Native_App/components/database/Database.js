@@ -211,7 +211,7 @@ export const Items = [
       '2020 Apple MacBook Pro (13.3-inch/33.78 cm, Apple M1 chip with 8‑core CPU and 8‑core GPU, 8GB RAM, 512GB SSD) - Silver',
     isOff: true,
     productImage: require('../database/images/Laptop/Apple_MacBook_1.png'),
-    isAvailable: true,
+    isAvailable: false,
     productImageList: [
       require('../database/images/Laptop/Apple_MacBook_1.png'),
       require('../database/images/Laptop/Apple_MacBook_2.png'),

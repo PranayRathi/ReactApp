@@ -3,22 +3,32 @@ import { View, Text, StatusBar, StyleSheet, ScrollView, TouchableOpacity, Image 
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { COLOURS, Items } from '../database/Database';
-
+import { AsyncStorage } from 'react-native';
 const Home = ({ navigation }) => {
 
     const [product, setProduct] = useState([]);
     const [accessory, setAccessory] = useState([]);
+    const [vegetable, setVegetable] = useState([]);
+    const [laptop, setLaptop] = useState([]);
+    const [userName, setUserName] = useState('Human Being');
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            getName()
             getDataFromDb();
         });
         return unsubscribe;
-    }, [navigation])
+    }, [navigation]);
+
+    const getName = async () => {
+        let user = await AsyncStorage.getItem('UserName')
+
+        setUserName(user);
+    }
 
     const getDataFromDb = () => {
 
-        let productList = [], accessoryList = [];
+        let productList = [], accessoryList = [], laptopList = [], vegetableList = [];
 
         for (const product of Items) {
             if (product.category === 'product') {
@@ -27,10 +37,18 @@ const Home = ({ navigation }) => {
             else if (product.category === 'accessory') {
                 accessoryList.push(product);
             }
+            else if (product.category === 'Laptop') {
+                laptopList.push(product);
+            }
+            else if (product.category === 'Vegetable') {
+                vegetableList.push(product);
+            }
         }
 
         setProduct(productList);
         setAccessory(accessoryList);
+        setVegetable(vegetableList);
+        setLaptop(laptopList);
     };
 
     // create Products component
@@ -56,7 +74,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <Text style={styles.mainproductContainer5}>{data.productName}</Text>
                 <View>
-                    <Text>{data.category === 'accessory' ? data.isAvailable ? (
+                    <Text>{data.isAvailable ? (
                         <View style={styles.mainproductContainer7}>
                             <FontAwesome name="circle" style={styles.mainproductContainer6} />
                             <Text>Available</Text>
@@ -64,7 +82,7 @@ const Home = ({ navigation }) => {
                     ) : <View style={styles.mainproductContainer7}>
                         <FontAwesome name="circle" style={styles.mainproductContainer8} />
                         <Text>Unavailable</Text>
-                    </View> : null}</Text>
+                    </View>}</Text>
                     <Text>&#8377; {data.productPrice}</Text>
                 </View>
 
@@ -78,7 +96,7 @@ const Home = ({ navigation }) => {
             <StatusBar backgroundColor={COLOURS.white} barStyle='dark-content' />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.verticalScroll}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
                         <FontAwesome5 name="shopping-bag" style={styles.shoppingBagStyle} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
@@ -86,16 +104,41 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.headerText}>
-                    <Text style={styles.text1}>Lets start Shopping &amp; Enjoying</Text>
-                    <Text style={styles.text2}>Some Random Text</Text>
+                    <Text style={styles.text1}>Hi {userName} 👋</Text>
+                    <Text style={styles.text2}>Thanks for choosing us 😃.</Text>
+                    <Text style={styles.text2}>{'\u2728'}Find some intesting deal on items.{'\u2728'}</Text>
                 </View>
-                <View style={{ padding: 16 }}>
+                <View style={{ padding: 5 }}>
+                    <View style={styles.productContainer1}>
+                        <View style={styles.mainTextContainer}>
+                            <Text style={styles.mainText1}>Vegetable</Text>
+                            <Text style={styles.mainText2}>{vegetable.length}</Text>
+                        </View>
+
+                    </View>
+                    <View style={styles.outerContainer}>{
+                        vegetable.map(data => {
+                            return <ProductCart data={data} key={data.id} />;
+                        })
+                    }</View>
+                    <View style={styles.productContainer1}>
+                        <View style={styles.mainTextContainer}>
+                            <Text style={styles.mainText1}>Laptop</Text>
+                            <Text style={styles.mainText2}>{laptop.length}</Text>
+                        </View>
+
+                    </View>
+                    <View style={styles.outerContainer}>{
+                        laptop.map(data => {
+                            return <ProductCart data={data} key={data.id} />;
+                        })
+                    }</View>
                     <View style={styles.productContainer1}>
                         <View style={styles.mainTextContainer}>
                             <Text style={styles.mainText1}>Product</Text>
-                            <Text style={styles.mainText2}>27</Text>
+                            <Text style={styles.mainText2}>{product.length}</Text>
                         </View>
-                        <Text style={styles.mainText3}>See All</Text>
+
                     </View>
                     <View style={styles.outerContainer}>{
                         product.map(data => {
@@ -105,9 +148,9 @@ const Home = ({ navigation }) => {
                     <View style={styles.productContainer1}>
                         <View style={styles.mainTextContainer}>
                             <Text style={styles.mainText1}>Accessory</Text>
-                            <Text style={styles.mainText2}>58</Text>
+                            <Text style={styles.mainText2}>{accessory.length}</Text>
                         </View>
-                        <Text style={styles.mainText3}>See All</Text>
+
                     </View>
                     <View style={styles.outerContainer}>{
                         accessory.map(data => {
@@ -132,10 +175,10 @@ const styles = StyleSheet.create({
     imageContainer: {
         width: '80%',
         height: '80%',
-        resizeMode: 'contain'
+        resizeMode: 'contain',
     },
     headerText: {
-        marginBottom: 10,
+        marginBottom: 5,
         padding: 16
     },
     mainTextContainer: {
