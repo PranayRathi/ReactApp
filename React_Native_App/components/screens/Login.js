@@ -13,7 +13,7 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-
+import { AsyncStorage } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { COLOURS, Items } from '../database/Database';
 
@@ -21,28 +21,36 @@ const Login = ({ navigation }) => {
 
     const [data, setData] = React.useState({
         username: '',
-        password: '',
+        phoneNo: '',
         check_textInputChange: false,
-        secureTextEntry: true,
         isValidUser: true,
-        isValidPassword: true,
     });
 
     const [isOTPEnter, setisOTPEnter] = React.useState(false);
     const [validateUser, setvalidateUser] = React.useState(false);
-
+    const [Otp, setOtp] = React.useState('')
     const { colors } = useTheme();
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-
+            setLoginData();
         });
 
         return unsubscribe;
     }, [navigation]);
 
     // const { signIn } = React.useContext(AuthContext);
+    const setLoginData = () => {
+        setData({
+            ...data,
+            username: '',
+            phoneNo: '',
+        });
 
+        setisOTPEnter(false)
+        setvalidateUser(false);
+        setOtp('');
+    }
     const textInputChange = (val) => {
         if (val.trim().length >= 4) {
             setData({
@@ -66,8 +74,7 @@ const Login = ({ navigation }) => {
         if (val.trim().length >= 10 && !isNaN(val)) {
             setData({
                 ...data,
-                password: val,
-                isValidPassword: true
+                phoneNo: val,
             });
             setisOTPEnter(true)
             Alert.alert('OTP is 1234', `${data.username}, please use above otp for login`, [
@@ -78,8 +85,7 @@ const Login = ({ navigation }) => {
 
                 setData({
                     ...data,
-                    password: val,
-                    isValidPassword: false
+                    phoneNo: val
                 });
             } else if (isNaN(val)) {
                 Alert.alert('Wrong Input!', 'Phone No should be digits only.', [
@@ -90,53 +96,37 @@ const Login = ({ navigation }) => {
         }
     }
 
-    const updateSecureTextEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
-        });
-    }
+    const loginHandle = async () => {
 
-    const handleValidUser = (val) => {
-        if (val.trim().length >= 4) {
-            setData({
-                ...data,
-                isValidUser: true
-            });
-        } else {
-            setData({
-                ...data,
-                isValidUser: false
-            });
-        }
-    }
-
-    const loginHandle = (userName, password) => {
-
-        const foundUser = Users.filter(item => {
-            return userName == item.username && password == item.password;
-        });
-
-        if (data.username.length == 0 || data.password.length == 0) {
-            Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
+        if (!data.username) {
+            Alert.alert('Wrong Input!', 'Please enter your Name.', [
                 { text: 'Okay' }
             ]);
             return;
         }
 
-        if (foundUser.length == 0) {
-            Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-                { text: 'Okay' }
-            ]);
+        if (data.username && data.phoneNo) {
+            await AsyncStorage.setItem('UserName', JSON.stringify(data.username));
+            await AsyncStorage.setItem('PhoneNo', JSON.stringify(data.phoneNo));
+            setData({
+                ...data,
+                phoneNo: '',
+            });
+
+            setisOTPEnter(false)
+            setvalidateUser(false);
+            setOtp('');
+            navigation.navigate('Home');
             return;
         }
-        // signIn(foundUser);
     }
 
     const validateOTP = (otp) => {
         if (otp == 1234) {
+            setOtp(otp);
             setvalidateUser(true);
         } else {
+            setOtp(otp);
             setvalidateUser(false);
         }
         return;
@@ -169,6 +159,7 @@ const Login = ({ navigation }) => {
                         style={[styles.textInput, {
                             color: colors.text
                         }]}
+                        value={data.username}
                         autoCapitalize="none"
                         onChangeText={(val) => textInputChange(val)}
 
@@ -205,13 +196,14 @@ const Login = ({ navigation }) => {
                         placeholderTextColor="#666666"
                         maxLength={10}
                         keyboardType='numeric'
+                        value={data.phoneNo}
                         style={[styles.textInput, {
                             color: colors.text
                         }]}
                         autoCapitalize="none"
                         onChangeText={(val) => handlePhoneNoChange(val)}
                     />
-                    {data.password.toString().length == 10 ?
+                    {data.phoneNo.toString().length == 10 ?
                         <Animatable.View
                             animation="bounceIn"
                         >
@@ -223,7 +215,7 @@ const Login = ({ navigation }) => {
                         </Animatable.View>
                         : null}
                 </View>
-                {data.password.toString().length == 10 || data.password.toString().length == 0 ? null :
+                {data.phoneNo.toString().length == 10 || data.phoneNo.toString().length == 0 ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
                         <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
                     </Animatable.View>
@@ -244,12 +236,13 @@ const Login = ({ navigation }) => {
                             <TextInput
                                 placeholder="Enter OTP"
                                 placeholderTextColor="#666666"
-                                secureTextEntry={data.secureTextEntry ? true : false}
+                                secureTextEntry={true}
                                 maxLength={4}
                                 keyboardType='numeric'
                                 style={[styles.textInput, {
                                     color: colors.text
                                 }]}
+                                value={Otp}
                                 autoCapitalize="none"
                                 onChangeText={(val) => validateOTP(val)}
                                 onEndEditing={(e) => validateOTP(e.nativeEvent.text)}
@@ -277,7 +270,7 @@ const Login = ({ navigation }) => {
                     <View
                         style={styles.s32}>
                         <TouchableOpacity
-                            onPress={() => (navigation.navigate('Home'))}
+                            onPress={() => (loginHandle())}
                             style={styles.s33}>
                             <Text
                                 style={styles.s34}>

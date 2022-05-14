@@ -84,7 +84,7 @@ const MyCart = ({ navigation }) => {
         }
 
         ToastAndroid.show('Items will be Deliverd SOON!', ToastAndroid.SHORT);
-        console.log("===== ", product)
+        // console.log("===== ", product)
         navigation.navigate('Home');
     };
 
