@@ -70,16 +70,19 @@ const Login = ({ navigation }) => {
     }
 
     const handlePhoneNoChange = (val) => {
-        console.log("=== ", val, val.toString().length)
+        // console.log("=== ", val, val.toString().length)
         if (val.trim().length >= 10 && !isNaN(val)) {
             setData({
                 ...data,
                 phoneNo: val,
             });
-            setisOTPEnter(true)
-            Alert.alert('OTP is 1234', `${data.username}, please use above otp for login`, [
-                { text: 'Okay' }
-            ]);
+
+            setTimeout(() => {
+                setisOTPEnter(true);
+                Alert.alert('OTP is 1234', `${data.username}, please use above otp for login`, [
+                    { text: 'Okay' }
+                ]);
+            }, 1000)
         } else {
             if (!isNaN(val)) {
 
@@ -217,7 +220,7 @@ const Login = ({ navigation }) => {
                 </View>
                 {data.phoneNo.toString().length == 10 || data.phoneNo.toString().length == 0 ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
+                        <Text style={styles.errorMsg}>Phone no must be 10 digit long.</Text>
                     </Animatable.View>
                 }
 
