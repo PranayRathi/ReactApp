@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Home from './components/screens/Home';
 import MyCart from './components/screens/MyCart';
 import ProductsInfo from './components/screens/ProductsInfo';
-
+import Login from './components/screens/Login'
 export default function App() {
 
   const Stack = createNativeStackNavigator();
@@ -13,6 +13,7 @@ export default function App() {
 
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name='Login' component={Login} />
         <Stack.Screen name='Home' component={Home} />
         <Stack.Screen name='MyCart' component={MyCart} />
         <Stack.Screen name='ProductsInfo' component={ProductsInfo} />
@@ -20,12 +21,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
