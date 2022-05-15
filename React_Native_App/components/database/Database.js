@@ -163,10 +163,10 @@ export const Items = [
     description:
       'The potato is a starchy tuber of the plant Solanum tuberosum and is a root vegetable native to the Americas. The plant is a perennial in the nightshade family Solanaceae. Potato cultivars appear in a variety of colors, shapes, and sizes.',
     isOff: true,
-    productImage: require('../database/images/Vegetable/il_potato.png'),
+    productImage: require('../database/images/Vegetable/potato.png'),
     isAvailable: true,
     productImageList: [
-      require('../database/images/Vegetable/il_potato.png')
+      require('../database/images/Vegetable/potato.png')
     ],
   },
   {
@@ -192,13 +192,13 @@ export const Items = [
     offPercentage: 10,
     description:
       'ASUS ROG Zephyrus S Ultra Slim Gaming Laptop, 15.6" 144Hz IPS-Type Full HD, GeForce RTX 2080, Intel Core i7-8750H CPU, 16GB DDR4, 512GB PCIe Nvme SSD, Aura Sync RGB, Windows 10 Pro - GX531GX-XS74',
-    isOff: true,
-    productImage: require('../database/images/Laptop/ASUS_ROG_1.png'),
+    isOff: false,
+    productImage: require('../database/images/Laptop/ASUS_ROG_1.jpeg'),
     isAvailable: true,
     productImageList: [
-      require('../database/images/Laptop/ASUS_ROG_1.png'),
-      require('../database/images/Laptop/ASUS_ROG_2.png'),
-      require('../database/images/Laptop/ASUS_ROG_3.png'),
+      require('../database/images/Laptop/ASUS_ROG_1.jpeg'),
+      require('../database/images/Laptop/ASUS_ROG_2.jpeg'),
+      require('../database/images/Laptop/ASUS_ROG_3.jpeg'),
     ],
   },
   {
@@ -209,13 +209,12 @@ export const Items = [
     offPercentage: 10,
     description:
       '2020 Apple MacBook Pro (13.3-inch/33.78 cm, Apple M1 chip with 8‑core CPU and 8‑core GPU, 8GB RAM, 512GB SSD) - Silver',
-    isOff: true,
-    productImage: require('../database/images/Laptop/Apple_MacBook_1.png'),
+    isOff: false,
+    productImage: require('../database/images/Laptop/Apple_MacBook_1.jpeg'),
     isAvailable: false,
     productImageList: [
-      require('../database/images/Laptop/Apple_MacBook_1.png'),
-      require('../database/images/Laptop/Apple_MacBook_2.png'),
-      require('../database/images/Laptop/Apple_MacBook_3.png'),
+      require('../database/images/Laptop/Apple_MacBook_1.jpeg'),
+      require('../database/images/Laptop/Apple_MacBook_1.jpeg'),
     ],
   },
   {
@@ -226,13 +225,13 @@ export const Items = [
     offPercentage: 10,
     description:
       'Lenovo Legion 7 AMD Ryzen 9 5900HX 16 inches QHD IPS 500Nits Gaming Laptop (32GB/1TB SSD/Windows 10/MS Office/NVIDIA RTX 3080 16GB/165Hz Refresh Rate/RGB Backlit Keyboard/Storm Grey/2.5Kg), 82N6008CIN',
-    isOff: true,
-    productImage: require('../database/images/Laptop/Lenovo_Legion_1.png'),
+    isOff: false,
+    productImage: require('../database/images/Laptop/Lenovo_Legion_1.jpeg'),
     isAvailable: true,
     productImageList: [
-      require('../database/images/Laptop/Lenovo_Legion_1.png'),
-      require('../database/images/Laptop/Lenovo_Legion_2.png'),
-      require('../database/images/Laptop/Lenovo_Legion_3.png'),
+      require('../database/images/Laptop/Lenovo_Legion_1.jpeg'),
+      require('../database/images/Laptop/Lenovo_Legion_2.jpeg'),
+      require('../database/images/Laptop/Lenovo_Legion_3.jpeg'),
     ],
   }
 ];
