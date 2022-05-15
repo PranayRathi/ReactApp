@@ -109,21 +109,21 @@ export const Items = [
       require('../database/images/accessories/boultairbass3.png'),
     ],
   },
-  {
-    id: 7,
-    category: 'Vegetable',
-    productName: 'Brinjal',
-    productPrice: 100,
-    offPercentage: 10,
-    description:
-      'Most commonly purple, the spongy, absorbent fruit is used in several cuisines. Typically used as a vegetable in cooking,.',
-    isOff: true,
-    productImage: require('../database/images/Vegetable/ilbrinjal.png'),
-    isAvailable: true,
-    productImageList: [
-      require('../database/images/Vegetable/ilbrinjal.png')
-    ],
-  },
+  // {
+  //   id: 7,
+  //   category: 'Vegetable',
+  //   productName: 'Brinjal',
+  //   productPrice: 100,
+  //   offPercentage: 10,
+  //   description:
+  //     'Most commonly purple, the spongy, absorbent fruit is used in several cuisines. Typically used as a vegetable in cooking,.',
+  //   isOff: true,
+  //   productImage: require('../database/images/Vegetable/ilbrinjal.png'),
+  //   isAvailable: true,
+  //   productImageList: [
+  //     require('../database/images/Vegetable/ilbrinjal.png')
+  //   ],
+  // },
   {
     id: 8,
     category: 'Vegetable',
@@ -232,6 +232,24 @@ export const Items = [
       require('../database/images/Laptop/Lenovo_Legion_1.jpeg'),
       require('../database/images/Laptop/Lenovo_Legion_2.jpeg'),
       require('../database/images/Laptop/Lenovo_Legion_3.jpeg'),
+    ],
+  },
+  {
+    id: 15,
+    category: 'Laptop',
+    productName: 'ALIENWARE Core i9 10th Gen ',
+    productPrice: 345400,
+    offPercentage: 10,
+    description:
+      'ALIENWARE Core i9 10th Gen - (32 GB/1 TB SSD/Windows 10 Home/8 GB Graphics/NVIDIA GeForce RTX 2080 with Max-Q) m15R3 Gaming Laptop  (15.6 inch, Lunar Light, 2.5 kg, With MS Office)',
+    isOff: false,
+    productImage: require('../database/images/Laptop/ALIENWARE_1.jpeg'),
+    isAvailable: true,
+    productImageList: [
+      require('../database/images/Laptop/ALIENWARE_1.jpeg'),
+      require('../database/images/Laptop/ALIENWARE_2.jpeg'),
+      require('../database/images/Laptop/ALIENWARE_3.jpeg'),
+      require('../database/images/Laptop/ALIENWARE_4.jpeg'),
     ],
   }
 ];

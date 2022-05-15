@@ -4,6 +4,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { COLOURS, Items } from '../database/Database';
 import { AsyncStorage } from 'react-native';
+// import Badge from "@material-ui/core/Badge";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+// import { Avatar, Badge, Icon, withBadge } from 'react-native-elements'
+
 const Home = ({ navigation }) => {
 
     const [product, setProduct] = useState([]);
@@ -11,6 +15,7 @@ const Home = ({ navigation }) => {
     const [vegetable, setVegetable] = useState([]);
     const [laptop, setLaptop] = useState([]);
     const [userName, setUserName] = useState('Human Being');
+    // const BadgedIcon = withBadge(1)(Icon)
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -100,27 +105,21 @@ const Home = ({ navigation }) => {
                         <FontAwesome5 name="shopping-bag" style={styles.shoppingBagStyle} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
-                        <FontAwesome5 name="shopping-cart" style={styles.shoppingCartStyle} />
+                        <View style={styles.shoppingBadge1}>
+                            <FontAwesome5 name="shopping-cart" style={styles.shoppingCartStyle} />
+                            <View style={styles.shoppingBadge3}>
+                                <Text style={{ color: 'black', fontSize: 10 }}>{10}</Text>
+                            </View>
+                        </View>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.headerText}>
                     <Text style={styles.text1}>Hi {userName} 👋</Text>
                     <Text style={styles.text2}>Thanks for choosing us 😃.</Text>
-                    <Text style={styles.text2}>{'\u2728'}Find some intesting deal on items.{'\u2728'}</Text>
+                    <Text style={styles.text2}>{'\u2728'}Find some interesting deal on products.{'\u2728'}</Text>
                 </View>
                 <View style={{ padding: 5 }}>
-                    <View style={styles.productContainer1}>
-                        <View style={styles.mainTextContainer}>
-                            <Text style={styles.mainText1}>Vegetable</Text>
-                            <Text style={styles.mainText2}>{vegetable.length}</Text>
-                        </View>
 
-                    </View>
-                    <View style={styles.outerContainer}>{
-                        vegetable.map(data => {
-                            return <ProductCart data={data} key={data.id} />;
-                        })
-                    }</View>
                     <View style={styles.productContainer1}>
                         <View style={styles.mainTextContainer}>
                             <Text style={styles.mainText1}>Laptop</Text>
@@ -154,6 +153,17 @@ const Home = ({ navigation }) => {
                     </View>
                     <View style={styles.outerContainer}>{
                         accessory.map(data => {
+                            return <ProductCart data={data} key={data.id} />;
+                        })
+                    }</View>
+                    <View style={styles.productContainer1}>
+                        <View style={styles.mainTextContainer}>
+                            <Text style={styles.mainText1}>Vegetable</Text>
+                            <Text style={styles.mainText2}>{vegetable.length}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.outerContainer}>{
+                        vegetable.map(data => {
                             return <ProductCart data={data} key={data.id} />;
                         })
                     }</View>
@@ -267,6 +277,34 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
 
+    },
+    shoppingBadge1: {
+        padding: 5,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    shoppingBadge2: {
+        padding: 5,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    shoppingBadge3: {
+        position: 'absolute',
+        height: 15,
+        width: 15,
+        borderRadius: 7,
+        backgroundColor: 'rgba(95,197,123,0.8)',
+        right: 7,
+        bottom: 7,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 2000
+    },
+    shoppingBadge4: {
+        color: 'white',
+        fontWeight: 'bold'
     },
     shoppingBagStyle: {
         fontSize: 18,
