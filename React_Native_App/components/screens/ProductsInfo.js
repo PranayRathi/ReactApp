@@ -60,7 +60,7 @@ const ProductInfo = (prop) => {
             ToastAndroid.SHORT,
         );
         // console.log('product ===== ', prop.cartItems)
-        prop.navigation.navigate('Home');
+        prop.navigation.navigate('MyCart');
 
         // let itemArray = this.props.cartItems//await AsyncStorage.getItem('cartItems');
         // itemArray = JSON.parse(itemArray);
