@@ -16,7 +16,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux'
 
 const MyCart = (props) => {
-    console.log(props)
+    // console.log(props)
     const [product, setProduct] = useState('');
     const [total, setTotal] = useState(null);
     const [ItemCount, setItemCount] = useState({});
@@ -26,16 +26,18 @@ const MyCart = (props) => {
             getDataFromDB();
         });
 
+
+
         return unsubscribe;
-    }, [props.navigation]);
+    }, [props.navigation, props, total]);
 
     //get data from local DB by ID
     const getDataFromDB = () => {
-        console.log("********* getDataFromDB", props.cartItems)
-        let items = Object.keys(props.cartItems)//await AsyncStorage.getItem('cartItems');
+        // console.log("********* getDataFromDB", props.cartItems)
+        let items = Object.keys(props.cartItems.cart)//await AsyncStorage.getItem('cartItems');
         // items = JSON.parse(items);
         items = items.map(item => Number(item))
-        console.log("=== items", items)
+        // console.log("=== items", items)
         let productData = [];
         if (items) {
             Items.forEach(data => {
@@ -44,7 +46,7 @@ const MyCart = (props) => {
                     let old = ItemCount
                     old[data.id] = 1
                     setItemCount(old)
-                    console.log('++++++++++= ', ItemCount)
+                    // console.log('++++++++++= ', ItemCount)
                     return;
                 }
             });
@@ -60,16 +62,20 @@ const MyCart = (props) => {
     const getTotal = productData => {
         let total = 0;
         for (let index = 0; index < productData.length; index++) {
-            let productPrice = productData[index].productPrice;
+            let productId = productData[index].id;
+            // console.log("=== ", productData[index], index, props.cartItems.cart[productId], productId)
+            let productPrice = ((productData[index].productPrice) * props.cartItems.cart[productId]);
             total = total + productPrice;
+            // console.log("=============== ", total)
         }
+        // total = total + total * 0.2
         setTotal(total);
     };
 
     //remove data from Cart
 
     const removeItemFromCart = id => {
-        console.log("============== removeItemFromCart", id, props.cartItems);
+        // console.log("============== removeItemFromCart", id, props.cartItems.cart);
         props.removeItem(id)
         let data = [];
         product.forEach((item) => {
@@ -78,7 +84,9 @@ const MyCart = (props) => {
             }
         })
         setProduct(data)
-        console.log("============== removeItemFromCart", id, props.cartItems);
+        // getTotal()
+        getDataFromDB()
+        // console.log("============== removeItemFromCart", id, props.cartItems.cart);
 
         // let itemArray = await AsyncStorage.getItem('cartItems');
         // itemArray = JSON.parse(itemArray);
@@ -111,19 +119,21 @@ const MyCart = (props) => {
     };
 
     const handleLess = (data) => {
-        console.log(" =========== pressed minus", data)
-        let old = ItemCount;
-        old[data] = old[data] - 1;
-        setItemCount(old);
-        console.log(ItemCount);
+        // console.log(" =========== pressed minus", data)
+        if (props.cartItems.cart[data] == 1) {
+            ToastAndroid.show('Can not remove item!', ToastAndroid.SHORT);
+            return
+        }
+        props.removeOneItem(data);
+        getDataFromDB()
+        // getTotal();
     };
 
     const handlePlus = (data) => {
-        console.log(" =========== pressed plus", data);
-        let old = ItemCount;
-        old[data] = old[data] + 1;
-        setItemCount(old);
-        console.log(ItemCount);
+        // console.log(" =========== pressed plus", data);
+        props.addItemToCart(data);
+        // getTotal(product)
+        getDataFromDB()
     };
 
     const renderProducts = (data, index) => {
@@ -154,7 +164,7 @@ const MyCart = (props) => {
                             </Text>
                             <Text>
                                 (~&#8377;
-                                {data.productPrice + data.productPrice / 20})
+                                {(data.productPrice) * props.cartItems.cart[data.id]})
                             </Text>
                         </View>
                     </View>
@@ -174,18 +184,19 @@ const MyCart = (props) => {
                                     />
                                 </View>
                             </TouchableOpacity>
-                            <Text>{ItemCount[data.id]}</Text>
-
-                            <View
-                                style={styles.renderProducts11}>
-                                <Entypo
-                                    name="plus"
-                                    style={{
-                                        fontSize: 16,
-                                        color: COLOURS.backgroundDark,
-                                    }}
-                                />
-                            </View>
+                            <Text>{props.cartItems.cart[data.id]}</Text>
+                            <TouchableOpacity onPress={() => handlePlus(data.id)}>
+                                <View
+                                    style={styles.renderProducts11}>
+                                    <Entypo
+                                        name="plus"
+                                        style={{
+                                            fontSize: 16,
+                                            color: COLOURS.backgroundDark,
+                                        }}
+                                    />
+                                </View>
+                            </TouchableOpacity>
                         </View>
                         <TouchableOpacity onPress={() => removeItemFromCart(data.id)}>
                             <MaterialCommunityIcons
@@ -224,7 +235,7 @@ const MyCart = (props) => {
                 </Text>
                 <View style={{ paddingHorizontal: 16 }}>
                     {product && product.length ? product.map((data, index) => renderProducts(data, index)) :
-                        <Text style={styles.text1}>Pleas add product in your cart!</Text>
+                        <Text style={styles.text1}>Please add product in your cart!</Text>
                     }
                 </View>
                 <View>
@@ -354,7 +365,7 @@ const MyCart = (props) => {
                             </Text>
                             <Text
                                 style={styles.s28}>
-                                &#8377;{total / 20}
+                                &#8377;{Number(Math.ceil(total / 20))}
                             </Text>
                         </View>
                         <View
@@ -395,8 +406,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        addItemToCart: (product) => dispatch({ type: 'ADD_TO_CART', payload: product }),
         removeItem: (product) => dispatch({ type: 'REMOVE_FROM_CART', payload: product }),
-        clearCart: () => dispatch({ type: 'CLEAR_CART', payload: 'DELETE' })
+        removeOneItem: (product) => dispatch({ type: 'REMOVE_ONE_CART_ITEM', payload: product }),
+        clearCart: () => dispatch({ type: 'CLEAR_CART', payload: 'DELETE' }),
+        setTotal: (tt) => dispatch({ type: 'SET_TOTAL', payload: tt })
     }
 }
 

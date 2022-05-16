@@ -5,12 +5,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { COLOURS, Items } from '../database/Database';
 import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux'
-// import Badge from "@material-ui/core/Badge";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-// import { Avatar, Badge, Icon, withBadge } from 'react-native-elements'
 
 const Home = (props) => {
-    console.log("============ props home", props)
+    // console.log("============ props home", props)
     const [product, setProduct] = useState([]);
     const [accessory, setAccessory] = useState([]);
     const [vegetable, setVegetable] = useState([]);
@@ -107,7 +104,7 @@ const Home = (props) => {
                         <View style={styles.shoppingBadge1}>
                             <FontAwesome5 name="shopping-cart" style={styles.shoppingCartStyle} />
                             <View style={styles.shoppingBadge3}>
-                                <Text style={{ color: 'black', fontSize: 10 }}>{Object.keys(props.cartItems).length}</Text>
+                                <Text style={{ color: 'black', fontSize: 10 }}>{Object.keys(props.cartItems.cart).length}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
