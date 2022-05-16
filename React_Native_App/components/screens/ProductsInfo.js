@@ -19,10 +19,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AsyncStorage } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 const width = Dimensions.get('window').width;
+import { connect } from 'react-redux'
 let opacity
 
-const ProductInfo = ({ route, navigation }) => {
-    const { productID } = route.params;
+const ProductInfo = (prop) => {
+    // console.log("========= prop", prop)
+    const { productID } = prop.route.params;
 
     const [product, setProduct] = useState({});
 
@@ -31,12 +33,12 @@ const ProductInfo = ({ route, navigation }) => {
     let position = Animated.divide(scrollX, width);
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
+        const unsubscribe = prop.navigation.addListener('focus', () => {
             getDataFromDB();
         });
 
         return unsubscribe;
-    }, [navigation]);
+    }, [prop.navigation]);
 
     //get product data by productID
 
@@ -51,37 +53,48 @@ const ProductInfo = ({ route, navigation }) => {
     // console.log(product, productID)
     //add to cart
 
-    const addToCart = async (id) => {
-        let itemArray = await AsyncStorage.getItem('cartItems');
-        itemArray = JSON.parse(itemArray);
-        if (itemArray) {
-            let array = itemArray;
-            array.push(id);
+    const addToCart = (id) => {
+        prop.addItemToCart(id);
+        ToastAndroid.show(
+            'Item Added Successfully to cart',
+            ToastAndroid.SHORT,
+        );
+        // console.log('product ===== ', prop.cartItems)
+        prop.navigation.navigate('Home');
 
-            try {
-                await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-                ToastAndroid.show(
-                    'Item Added Successfully to cart',
-                    ToastAndroid.SHORT,
-                );
-                navigation.navigate('Home');
-            } catch (error) {
-                return error;
-            }
-        } else {
-            let array = [];
-            array.push(id);
-            try {
-                await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-                ToastAndroid.show(
-                    'Item Added Successfully to cart',
-                    ToastAndroid.SHORT,
-                );
-                navigation.navigate('Home');
-            } catch (error) {
-                return error;
-            }
-        }
+        // let itemArray = this.props.cartItems//await AsyncStorage.getItem('cartItems');
+        // itemArray = JSON.parse(itemArray);
+        // if (itemArray) {
+        //     let array = itemArray;
+        //     array.push(id);
+
+        //     try {
+        //         // await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+        //         this.props.addItemToCart(id)
+        //         ToastAndroid.show(
+        //             'Item Added Successfully to cart',
+        //             ToastAndroid.SHORT,
+        //         );
+        //         navigation.navigate('Home');
+        //     } catch (error) {
+        //         return error;
+        //     }
+        // } else {
+        //     let array = [];
+        //     array.push(id);
+        //     try {
+        //         // await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+        //         this.props.addItemToCart(id)
+        //         ToastAndroid.show(
+        //             'Item Added Successfully to cart',
+        //             ToastAndroid.SHORT,
+        //         );
+        //         navigation.navigate('Home');
+        //     } catch (error) {
+        //         return error;
+        //     }
+        // }
+        // this.props.addItemToCart(id)
     };
 
     //product horizontal scroll product card
@@ -113,7 +126,7 @@ const ProductInfo = ({ route, navigation }) => {
                     style={styles.s3}>
                     <View
                         style={styles.s4}>
-                        <TouchableOpacity onPress={() => navigation.goBack('Home')}>
+                        <TouchableOpacity onPress={() => prop.navigation.goBack('Home')}>
                             <Entypo
                                 name="chevron-left"
                                 style={styles.s5}
@@ -229,7 +242,22 @@ const ProductInfo = ({ route, navigation }) => {
     );
 };
 
-export default ProductInfo;
+const mapStateToProps = (state) => {
+    return {
+        cartItems: state
+    }
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addItemToCart: (product) => dispatch({ type: 'ADD_TO_CART', payload: product })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo);
+
+// export default ProductInfo;
 
 const styles = StyleSheet.create({
     s1: {

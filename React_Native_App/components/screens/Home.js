@@ -4,26 +4,33 @@ import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { COLOURS, Items } from '../database/Database';
 import { AsyncStorage } from 'react-native';
+import { connect } from 'react-redux'
 // import Badge from "@material-ui/core/Badge";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 // import { Avatar, Badge, Icon, withBadge } from 'react-native-elements'
 
-const Home = ({ navigation }) => {
-
+const Home = (props) => {
+    console.log("============ props home", props)
     const [product, setProduct] = useState([]);
     const [accessory, setAccessory] = useState([]);
     const [vegetable, setVegetable] = useState([]);
     const [laptop, setLaptop] = useState([]);
     const [userName, setUserName] = useState('Human Being');
-    // const BadgedIcon = withBadge(1)(Icon)
-
+    const [CartCounter, setCartCounter] = useState(0)
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
+        // getCounter()
+        const unsubscribe = props.navigation.addListener('focus', () => {
             getName()
             getDataFromDb();
         });
         return unsubscribe;
-    }, [navigation]);
+    }, [props.navigation]);
+
+    const getCounter = () => {
+        console.log("====== ", props.cartItems)
+        setCartCounter(Object.keys(props.cartItems).length);
+        console.log("====== ", CartCounter)
+    }
 
     const getName = async () => {
         let user = await AsyncStorage.getItem('UserName')
@@ -66,7 +73,7 @@ const Home = ({ navigation }) => {
                 onPress=
                 {
                     () => {
-                        navigation.navigate('ProductsInfo', { productID: data.id })
+                        props.navigation.navigate('ProductsInfo', { productID: data.id })
                     }
                 }>
                 <View style={styles.mainproductContainer2}>
@@ -101,14 +108,14 @@ const Home = ({ navigation }) => {
             <StatusBar backgroundColor={COLOURS.white} barStyle='dark-content' />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.verticalScroll}>
-                    <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('MyCart')}>
                         <FontAwesome5 name="shopping-bag" style={styles.shoppingBagStyle} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('MyCart')}>
                         <View style={styles.shoppingBadge1}>
                             <FontAwesome5 name="shopping-cart" style={styles.shoppingCartStyle} />
                             <View style={styles.shoppingBadge3}>
-                                <Text style={{ color: 'black', fontSize: 10 }}>{10}</Text>
+                                <Text style={{ color: 'black', fontSize: 10 }}>{CartCounter}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -174,7 +181,20 @@ const Home = ({ navigation }) => {
     )
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+    return {
+        cartItems: state
+    }
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addItemToCart: (product) => dispatch({ type: 'ADD_TO_CART', payload: product })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
 
 const styles = StyleSheet.create({
     bag: {

@@ -13,28 +13,38 @@ import { AsyncStorage } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { COLOURS, Items } from '../database/Database';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-const MyCart = ({ navigation }) => {
+import { connect } from 'react-redux'
+
+const MyCart = (props) => {
+    console.log(props)
     const [product, setProduct] = useState('');
     const [total, setTotal] = useState(null);
+    const [ItemCount, setItemCount] = useState({});
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
             getDataFromDB();
         });
 
         return unsubscribe;
-    }, [navigation]);
+    }, [props.navigation]);
 
     //get data from local DB by ID
-    const getDataFromDB = async () => {
-        let items = await AsyncStorage.getItem('cartItems');
-        items = JSON.parse(items);
-        // console.log(items)
+    const getDataFromDB = () => {
+        console.log("********* getDataFromDB", props.cartItems)
+        let items = Object.keys(props.cartItems)//await AsyncStorage.getItem('cartItems');
+        // items = JSON.parse(items);
+        items = items.map(item => Number(item))
+        console.log("=== items", items)
         let productData = [];
         if (items) {
             Items.forEach(data => {
                 if (items.includes(data.id)) {
                     productData.push(data);
+                    let old = ItemCount
+                    old[data.id] = 1
+                    setItemCount(old)
+                    console.log('++++++++++= ', ItemCount)
                     return;
                 }
             });
@@ -58,20 +68,31 @@ const MyCart = ({ navigation }) => {
 
     //remove data from Cart
 
-    const removeItemFromCart = async id => {
-        let itemArray = await AsyncStorage.getItem('cartItems');
-        itemArray = JSON.parse(itemArray);
-        if (itemArray) {
-            let array = itemArray;
-            for (let index = 0; index < array.length; index++) {
-                if (array[index] == id) {
-                    array.splice(index, 1);
-                }
-
-                await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-                getDataFromDB();
+    const removeItemFromCart = id => {
+        console.log("============== removeItemFromCart", id, props.cartItems);
+        props.removeItem(id)
+        let data = [];
+        product.forEach((item) => {
+            if (item.id != id) {
+                data.push(item);
             }
-        }
+        })
+        setProduct(data)
+        console.log("============== removeItemFromCart", id, props.cartItems);
+
+        // let itemArray = await AsyncStorage.getItem('cartItems');
+        // itemArray = JSON.parse(itemArray);
+        // if (itemArray) {
+        //     let array = itemArray;
+        //     for (let index = 0; index < array.length; index++) {
+        //         if (array[index] == id) {
+        //             array.splice(index, 1);
+        //         }
+
+        //         await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+        //         getDataFromDB();
+        //     }
+        // }
     };
 
     //checkout
@@ -79,21 +100,37 @@ const MyCart = ({ navigation }) => {
     const checkOut = async () => {
         // console.log("===== ", product)
         try {
-            await AsyncStorage.removeItem('cartItems');
+            props.clearCart();
         } catch (error) {
             return error;
         }
 
         ToastAndroid.show('Items will be Deliverd SOON!', ToastAndroid.SHORT);
         // console.log("===== ", product)
-        navigation.navigate('Home');
+        props.navigation.navigate('Home');
+    };
+
+    const handleLess = (data) => {
+        console.log(" =========== pressed minus", data)
+        let old = ItemCount;
+        old[data] = old[data] - 1;
+        setItemCount(old);
+        console.log(ItemCount);
+    };
+
+    const handlePlus = (data) => {
+        console.log(" =========== pressed plus", data);
+        let old = ItemCount;
+        old[data] = old[data] + 1;
+        setItemCount(old);
+        console.log(ItemCount);
     };
 
     const renderProducts = (data, index) => {
         return (
             <TouchableOpacity
                 key={index}
-                onPress={() => navigation.navigate('ProductsInfo', { productID: data.id })}
+                onPress={() => props.navigation.navigate('ProductsInfo', { productID: data.id })}
                 style={styles.renderProducts1}>
                 <View
                     style={styles.renderProducts2}>
@@ -128,14 +165,17 @@ const MyCart = ({ navigation }) => {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                             }}>
-                            <View
-                                style={styles.renderProducts9}>
-                                <Entypo
-                                    name="minus"
-                                    style={styles.renderProducts10}
-                                />
-                            </View>
-                            <Text>1</Text>
+                            <TouchableOpacity onPress={() => handleLess(data.id)}>
+                                <View
+                                    style={styles.renderProducts9}>
+                                    <Entypo
+                                        name="minus"
+                                        style={styles.renderProducts10}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                            <Text>{ItemCount[data.id]}</Text>
+
                             <View
                                 style={styles.renderProducts11}>
                                 <Entypo
@@ -165,7 +205,7 @@ const MyCart = ({ navigation }) => {
             <ScrollView>
                 <View
                     style={styles.s2}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
                         <Entypo
                             name="chevron-left"
                             style={styles.s3}
@@ -347,7 +387,21 @@ const MyCart = ({ navigation }) => {
     );
 };
 
-export default MyCart;
+const mapStateToProps = (state) => {
+    return {
+        cartItems: state
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeItem: (product) => dispatch({ type: 'REMOVE_FROM_CART', payload: product }),
+        clearCart: () => dispatch({ type: 'CLEAR_CART', payload: 'DELETE' })
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyCart);
 
 
 
