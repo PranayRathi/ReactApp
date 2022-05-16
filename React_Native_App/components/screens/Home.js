@@ -16,21 +16,13 @@ const Home = (props) => {
     const [vegetable, setVegetable] = useState([]);
     const [laptop, setLaptop] = useState([]);
     const [userName, setUserName] = useState('Human Being');
-    const [CartCounter, setCartCounter] = useState(0)
     useEffect(() => {
-        // getCounter()
         const unsubscribe = props.navigation.addListener('focus', () => {
             getName()
             getDataFromDb();
         });
         return unsubscribe;
     }, [props.navigation]);
-
-    const getCounter = () => {
-        console.log("====== ", props.cartItems)
-        setCartCounter(Object.keys(props.cartItems).length);
-        console.log("====== ", CartCounter)
-    }
 
     const getName = async () => {
         let user = await AsyncStorage.getItem('UserName')
@@ -115,7 +107,7 @@ const Home = (props) => {
                         <View style={styles.shoppingBadge1}>
                             <FontAwesome5 name="shopping-cart" style={styles.shoppingCartStyle} />
                             <View style={styles.shoppingBadge3}>
-                                <Text style={{ color: 'black', fontSize: 10 }}>{CartCounter}</Text>
+                                <Text style={{ color: 'black', fontSize: 10 }}>{Object.keys(props.cartItems).length}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
